@@ -1,7 +1,5 @@
 package com.submission.githubusersearch.network
 
-import com.dicoding.githubapi.network.response.FollowersResponse
-import com.dicoding.githubapi.network.response.FollowingResponse
 import com.dicoding.githubapi.network.response.SearchUserResponse
 import com.dicoding.githubapi.network.response.UserResponse
 import retrofit2.Response
@@ -18,8 +16,8 @@ interface GithubEndpoint {
     suspend fun search(@Query("q") username: String?): Response<SearchUserResponse>
 
     @GET("users/{username}/followers")
-    suspend fun followers(@Path("username") username: String?): Response<FollowersResponse>
+    suspend fun followers(@Path("username") username: String?): Response<List<UserResponse>>
 
     @GET("users/{username}/following")
-    suspend fun following(@Path("username") username: String?): Response<FollowingResponse>
+    suspend fun following(@Path("username") username: String?): Response<List<UserResponse>>
 }
