@@ -1,7 +1,8 @@
-package com.submission.githubusersearch
+package com.submission.githubusersearch.data.view.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.submission.githubusersearch.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
