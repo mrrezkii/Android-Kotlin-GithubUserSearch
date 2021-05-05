@@ -1,0 +1,3 @@
+package com.submission.githubusersearch.network
+
+class GithubRepository
