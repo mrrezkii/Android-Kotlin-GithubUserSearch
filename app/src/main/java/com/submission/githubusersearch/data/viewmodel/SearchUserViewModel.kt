@@ -12,17 +12,12 @@ class SearchUserViewModel(
     val getApi: GithubEndpoint
 ) : ViewModel() {
 
-    val titleBar: MutableLiveData<String> = MutableLiveData("")
     val searchUserResponse: MutableLiveData<Resource<SearchUserResponse>> = MutableLiveData()
 
-    init {
-        fetchSearch()
-    }
-
-    private fun fetchSearch() = viewModelScope.launch {
+    fun fetchUsername(username: String) = viewModelScope.launch {
         searchUserResponse.value = Resource.Loading()
         try {
-            searchUserResponse.value = Resource.Success(getApi.search("q").body()!!)
+            searchUserResponse.value = Resource.Success(getApi.search(username).body()!!)
         } catch (e: Exception) {
             searchUserResponse.value = Resource.Error(e.message.toString())
         }

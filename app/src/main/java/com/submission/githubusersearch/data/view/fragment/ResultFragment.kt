@@ -6,15 +6,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.submission.githubusersearch.R
+import com.submission.githubusersearch.data.viewmodel.SearchUserViewModel
+import com.submission.githubusersearch.data.viewmodel.factory.SearchUserViewModelFactory
 import com.submission.githubusersearch.databinding.FragmentResultBinding
+import com.submission.githubusersearch.network.Resource
+import com.submission.githubusersearch.network.RetrofitClient
 
 
 class ResultFragment : Fragment() {
 
+    private val api by lazy { RetrofitClient.getClient() }
     private lateinit var binding: FragmentResultBinding
+    private lateinit var viewModelFactory: SearchUserViewModelFactory
+    private lateinit var viewModel: SearchUserViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -28,6 +38,13 @@ class ResultFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         setupSoftKeyboard()
+        setupViewModel()
+        setupListener()
+        setupObserver()
+    }
+
+    private fun setupListener() {
+        viewModel.fetchUsername("newbiexpert")
     }
 
     private fun setupView() {
@@ -51,4 +68,24 @@ class ResultFragment : Fragment() {
         imgr.showSoftInput(binding.editSearch, 0)
     }
 
+    private fun setupViewModel() {
+        viewModelFactory = SearchUserViewModelFactory(api)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(SearchUserViewModel::class.java)
+    }
+
+    private fun setupObserver() {
+        viewModel.searchUserResponse.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Resource.Loading -> {
+                    print("github : isLoading")
+                }
+                is Resource.Success -> {
+                    print("github : ${it.data!!.items}")
+                }
+                is Resource.Error -> {
+                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+                }
+            }
+        })
+    }
 }
