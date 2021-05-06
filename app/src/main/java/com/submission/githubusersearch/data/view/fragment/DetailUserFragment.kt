@@ -75,8 +75,6 @@ class DetailUserFragment : Fragment() {
 
     private fun setupListener() {
         viewModel.fetchUserDetail(username)
-        viewModel.fetchUserFollower("newbiexpert")
-        viewModel.fetchUserFollowing("newbiexpert")
     }
 
     private fun setupObserver() {
@@ -98,34 +96,6 @@ class DetailUserFragment : Fragment() {
                 }
             }
         })
-//        viewModel.userFollowerResponse.observe(viewLifecycleOwner, Observer {
-//            when (it) {
-//                is Resource.Loading -> {
-//                    print("follower : isLoading")
-//                }
-//                is Resource.Success -> {
-//                    print("follower : ${it.data!!}")
-//                    Toast.makeText(context, it.data[1].login, Toast.LENGTH_LONG).show()
-//                }
-//                is Resource.Error -> {
-//                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-//                }
-//            }
-//        })
-//        viewModel.userFollowingResponse.observe(viewLifecycleOwner, Observer {
-//            when (it) {
-//                is Resource.Loading -> {
-//                    print("following : isLoading")
-//                }
-//                is Resource.Success -> {
-//                    print("following : ${it.data!!}")
-//                    Toast.makeText(context, it.data[1].login, Toast.LENGTH_LONG).show()
-//                }
-//                is Resource.Error -> {
-//                    Toast.makeText(context, "gagal following", Toast.LENGTH_LONG).show()
-//                }
-//            }
-//        })
     }
 
     override fun onResume() {
