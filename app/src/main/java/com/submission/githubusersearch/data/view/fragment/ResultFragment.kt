@@ -41,7 +41,6 @@ class ResultFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
-        setupSoftKeyboard()
         setupViewModel()
         setupListener()
         setupRecyclerView()
@@ -63,6 +62,7 @@ class ResultFragment : Fragment() {
         val imgr =
             requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+
         imgr.showSoftInput(binding.editSearch, 0)
     }
 
@@ -102,5 +102,10 @@ class ResultFragment : Fragment() {
                 }
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setupSoftKeyboard()
     }
 }

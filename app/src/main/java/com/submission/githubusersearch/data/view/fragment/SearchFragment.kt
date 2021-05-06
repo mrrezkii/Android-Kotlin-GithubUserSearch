@@ -1,9 +1,11 @@
 package com.dicoding.githubapi.data.view.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.submission.githubusersearch.R
@@ -35,5 +37,13 @@ class SearchFragment : Fragment() {
         binding.editSearch.setOnClickListener {
             findNavController().navigate(R.id.action_searchFragment_to_resultFragment)
         }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        val imgr =
+            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
+        imgr.hideSoftInputFromWindow(view?.windowToken, 0)
     }
 }
