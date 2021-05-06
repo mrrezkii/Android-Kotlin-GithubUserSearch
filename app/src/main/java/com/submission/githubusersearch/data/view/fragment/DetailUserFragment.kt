@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.submission.githubusersearch.data.view.adapter.DetailUserAdapter
 import com.submission.githubusersearch.data.viewmodel.UserDetailViewModel
@@ -25,6 +26,7 @@ class DetailUserFragment : Fragment() {
     private lateinit var binding: FragmentDetailUserBinding
     private lateinit var viewModelFactory: UserDetailViewModelFactory
     private lateinit var viewModel: UserDetailViewModel
+    private val username by lazy { requireArguments().getString("username")!! }
 
 
     override fun onCreateView(
@@ -47,6 +49,7 @@ class DetailUserFragment : Fragment() {
 
     private fun setupView() {
         binding.detailContainer.isFillViewport = true
+        binding.toolbarLayout.title = username
         binding.toolbarLayout.setNavigationIcon(androidx.appcompat.R.drawable.abc_ic_ab_back_material)
         binding.toolbarLayout.setNavigationOnClickListener {
             findNavController().popBackStack()
@@ -71,7 +74,7 @@ class DetailUserFragment : Fragment() {
     }
 
     private fun setupListener() {
-        viewModel.fetchUserDetail("newbiexpert")
+        viewModel.fetchUserDetail(username)
         viewModel.fetchUserFollower("newbiexpert")
         viewModel.fetchUserFollowing("newbiexpert")
     }
@@ -84,41 +87,45 @@ class DetailUserFragment : Fragment() {
                 }
                 is Resource.Success -> {
                     print("detail : ${it.data!!.name}")
-                    Toast.makeText(context, it.data.name, Toast.LENGTH_LONG).show()
+                    binding.usernameGithub.text = it.data.name
+                    Glide.with(view?.context!!)
+                        .load(it.data.avatarUrl)
+                        .centerCrop()
+                        .into(binding.imageViewHeader)
                 }
                 is Resource.Error -> {
                     Toast.makeText(context, "gagal detail", Toast.LENGTH_LONG).show()
                 }
             }
         })
-        viewModel.userFollowerResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Resource.Loading -> {
-                    print("follower : isLoading")
-                }
-                is Resource.Success -> {
-                    print("follower : ${it.data!!}")
-                    Toast.makeText(context, it.data[1].login, Toast.LENGTH_LONG).show()
-                }
-                is Resource.Error -> {
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
-                }
-            }
-        })
-        viewModel.userFollowingResponse.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Resource.Loading -> {
-                    print("following : isLoading")
-                }
-                is Resource.Success -> {
-                    print("following : ${it.data!!}")
-                    Toast.makeText(context, it.data[1].login, Toast.LENGTH_LONG).show()
-                }
-                is Resource.Error -> {
-                    Toast.makeText(context, "gagal following", Toast.LENGTH_LONG).show()
-                }
-            }
-        })
+//        viewModel.userFollowerResponse.observe(viewLifecycleOwner, Observer {
+//            when (it) {
+//                is Resource.Loading -> {
+//                    print("follower : isLoading")
+//                }
+//                is Resource.Success -> {
+//                    print("follower : ${it.data!!}")
+//                    Toast.makeText(context, it.data[1].login, Toast.LENGTH_LONG).show()
+//                }
+//                is Resource.Error -> {
+//                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
+//                }
+//            }
+//        })
+//        viewModel.userFollowingResponse.observe(viewLifecycleOwner, Observer {
+//            when (it) {
+//                is Resource.Loading -> {
+//                    print("following : isLoading")
+//                }
+//                is Resource.Success -> {
+//                    print("following : ${it.data!!}")
+//                    Toast.makeText(context, it.data[1].login, Toast.LENGTH_LONG).show()
+//                }
+//                is Resource.Error -> {
+//                    Toast.makeText(context, "gagal following", Toast.LENGTH_LONG).show()
+//                }
+//            }
+//        })
     }
 
     override fun onResume() {

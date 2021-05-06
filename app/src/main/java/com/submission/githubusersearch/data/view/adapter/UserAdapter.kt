@@ -34,7 +34,7 @@ class UserAdapter(
 
         holder.binding.tvUsername.text = user.login
         holder.binding.container.setOnClickListener {
-//            listener.onClick()
+           listener.onClick(user)
         }
     }
 

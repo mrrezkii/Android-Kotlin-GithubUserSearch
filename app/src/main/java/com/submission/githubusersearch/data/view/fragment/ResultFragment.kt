@@ -7,11 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.dicoding.githubapi.network.response.UserResponse
+import com.submission.githubusersearch.R
 import com.submission.githubusersearch.data.view.adapter.UserAdapter
 import com.submission.githubusersearch.data.viewmodel.SearchUserViewModel
 import com.submission.githubusersearch.data.viewmodel.factory.SearchUserViewModelFactory
@@ -76,7 +78,10 @@ class ResultFragment : Fragment() {
     private fun setupRecyclerView() {
         adapter = UserAdapter(arrayListOf(), object : UserAdapter.OnAdapterListener {
             override fun onClick(result: UserResponse) {
-                TODO("Not yet implemented")
+                findNavController().navigate(
+                    R.id.action_resultFragment_to_detailUserFragment,
+                    bundleOf("username" to result.login)
+                )
             }
         })
         binding.listResult.adapter = adapter
