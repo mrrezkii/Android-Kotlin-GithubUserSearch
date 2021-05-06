@@ -11,7 +11,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.submission.githubusersearch.R
+import com.dicoding.githubapi.network.response.UserResponse
+import com.submission.githubusersearch.data.view.adapter.UserAdapter
 import com.submission.githubusersearch.data.viewmodel.SearchUserViewModel
 import com.submission.githubusersearch.data.viewmodel.factory.SearchUserViewModelFactory
 import com.submission.githubusersearch.databinding.FragmentResultBinding
@@ -25,6 +26,7 @@ class ResultFragment : Fragment() {
     private lateinit var binding: FragmentResultBinding
     private lateinit var viewModelFactory: SearchUserViewModelFactory
     private lateinit var viewModel: SearchUserViewModel
+    private lateinit var adapter: UserAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,11 +42,8 @@ class ResultFragment : Fragment() {
         setupSoftKeyboard()
         setupViewModel()
         setupListener()
+        setupRecyclerView()
         setupObserver()
-    }
-
-    private fun setupListener() {
-        viewModel.fetchUsername("newbiexpert")
     }
 
     private fun setupView() {
@@ -55,9 +54,6 @@ class ResultFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        binding.btnDetail.setOnClickListener {
-            findNavController().navigate(R.id.action_resultFragment_to_detailUserFragment)
-        }
 
     }
 
@@ -73,6 +69,19 @@ class ResultFragment : Fragment() {
         viewModel = ViewModelProvider(this, viewModelFactory).get(SearchUserViewModel::class.java)
     }
 
+    private fun setupListener() {
+        viewModel.fetchUsername("newbie")
+    }
+
+    private fun setupRecyclerView() {
+        adapter = UserAdapter(arrayListOf(), object : UserAdapter.OnAdapterListener {
+            override fun onClick(result: UserResponse) {
+                TODO("Not yet implemented")
+            }
+        })
+        binding.listResult.adapter = adapter
+    }
+
     private fun setupObserver() {
         viewModel.searchUserResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
@@ -81,6 +90,7 @@ class ResultFragment : Fragment() {
                 }
                 is Resource.Success -> {
                     print("github : ${it.data!!.items}")
+                    adapter.setData(it.data.items as List<UserResponse>)
                 }
                 is Resource.Error -> {
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
