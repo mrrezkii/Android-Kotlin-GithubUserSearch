@@ -12,9 +12,14 @@ class UserDetailViewModel(
     val getApi: GithubEndpoint
 ) : ViewModel() {
 
+    val usernameResponse: MutableLiveData<String> = MutableLiveData("")
     val userDetailResponse: MutableLiveData<Resource<UserResponse>> = MutableLiveData()
     val userFollowingResponse: MutableLiveData<Resource<List<UserResponse>>> = MutableLiveData()
     val userFollowerResponse: MutableLiveData<Resource<List<UserResponse>>> = MutableLiveData()
+
+    fun setUsername(username: String) = viewModelScope.launch {
+        usernameResponse.value = username
+    }
 
     fun fetchUserDetail(username: String) = viewModelScope.launch {
         userDetailResponse.value = Resource.Loading()

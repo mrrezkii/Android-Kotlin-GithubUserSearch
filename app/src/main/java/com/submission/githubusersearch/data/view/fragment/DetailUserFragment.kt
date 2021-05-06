@@ -70,11 +70,15 @@ class DetailUserFragment : Fragment() {
 
     private fun setupViewModel() {
         viewModelFactory = UserDetailViewModelFactory(api)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(UserDetailViewModel::class.java)
+        viewModel = ViewModelProvider(
+            requireActivity(),
+            viewModelFactory
+        ).get(UserDetailViewModel::class.java)
     }
 
     private fun setupListener() {
         viewModel.fetchUserDetail(username)
+        viewModel.usernameResponse.postValue(username)
     }
 
     private fun setupObserver() {
