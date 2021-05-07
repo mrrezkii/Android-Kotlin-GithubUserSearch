@@ -13,6 +13,8 @@ class UserDetailViewModel(
 ) : ViewModel() {
 
     val usernameResponse: MutableLiveData<String> = MutableLiveData("")
+    val dataUser: MutableLiveData<UserResponse> = MutableLiveData()
+
     val userDetailResponse: MutableLiveData<Resource<UserResponse>> = MutableLiveData()
     val userFollowingResponse: MutableLiveData<Resource<List<UserResponse>>> = MutableLiveData()
     val userFollowerResponse: MutableLiveData<Resource<List<UserResponse>>> = MutableLiveData()

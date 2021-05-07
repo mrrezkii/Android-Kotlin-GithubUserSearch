@@ -13,6 +13,10 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.example.awesomedialog.AwesomeDialog
+import com.example.awesomedialog.body
+import com.example.awesomedialog.onPositive
+import com.example.awesomedialog.title
 import com.google.android.material.tabs.TabLayoutMediator
 import com.submission.githubusersearch.data.view.adapter.DetailUserAdapter
 import com.submission.githubusersearch.data.viewmodel.UserDetailViewModel
@@ -31,6 +35,7 @@ class DetailUserFragment : Fragment() {
     private val username by lazy { requireArguments().getString("username")!! }
 
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -46,6 +51,38 @@ class DetailUserFragment : Fragment() {
         setupViewModel()
         setupListener()
         setupObserver()
+        setupFab()
+    }
+
+    private fun setupFab() {
+        viewModel.dataUser.observe(viewLifecycleOwner, Observer { data ->
+            binding.fab.setOnClickListener {
+                data.name?.let { it1 ->
+                    AwesomeDialog.build(requireActivity())
+                        .title(it1)
+                        .body(
+                            """
+                            username    : ${data.login}
+                            location    : ${data.location}
+                            company     : ${data.company}
+                        """.trimIndent()
+                        )
+                        .onPositive("Close")
+                } ?: run {
+                    AwesomeDialog.build(requireActivity())
+                        .title(username)
+                        .body(
+                            """
+                            username    : ${data.login}
+                            location    : ${data.location}
+                            company     : ${data.company}
+                        """.trimIndent()
+                        )
+                        .onPositive("Close")
+                }
+            }
+        })
+
     }
 
     private fun setupView() {
@@ -91,6 +128,11 @@ class DetailUserFragment : Fragment() {
                 is Resource.Success -> {
                     print("detail : ${it.data!!.name}")
                     binding.usernameGithub.text = it.data.name
+                    viewModel.dataUser.postValue(it.data)
+//                    viewModel.nameResponse.postValue(it.data.name)
+//                    viewModel.locationResponse.postValue(it.data.location)
+//                    viewModel.companyResponse.postValue(it.data.company)
+
                     Glide.with(view?.context!!)
                         .load(it.data.avatarUrl)
                         .centerCrop()
