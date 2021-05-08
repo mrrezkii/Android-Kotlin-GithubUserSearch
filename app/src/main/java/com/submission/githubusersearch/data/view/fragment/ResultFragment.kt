@@ -72,7 +72,13 @@ class ResultFragment : Fragment() {
     }
 
     private fun setupListener() {
-        viewModel.fetchUsername("newbie")
+        binding.refreshUsername.isRefreshing = true
+        if (binding.refreshUsername.isRefreshing) {
+            viewModel.fetchUsername("newbie")
+        }
+        binding.refreshUsername.setOnRefreshListener {
+            viewModel.fetchUsername("newbie")
+        }
     }
 
     private fun setupRecyclerView() {
@@ -91,13 +97,16 @@ class ResultFragment : Fragment() {
         viewModel.searchUserResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Resource.Loading -> {
+                    binding.refreshUsername.isRefreshing = true
                     print("github : isLoading")
                 }
                 is Resource.Success -> {
+                    binding.refreshUsername.isRefreshing = false
                     print("github : ${it.data!!.items}")
                     adapter.setData(it.data.items as List<UserResponse>)
                 }
                 is Resource.Error -> {
+                    binding.refreshUsername.isRefreshing = false
                     Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                 }
             }

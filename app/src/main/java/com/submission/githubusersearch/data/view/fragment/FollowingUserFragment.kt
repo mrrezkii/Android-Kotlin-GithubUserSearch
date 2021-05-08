@@ -50,9 +50,23 @@ class FollowingUserFragment : Fragment() {
     }
 
     private fun setupListener() {
+        binding.refreshUsername.isRefreshing = true
         viewModel.usernameResponse.observe(viewLifecycleOwner, Observer {
-            it?.let { viewModel.fetchUserFollowing(it) }
+            it?.let {
+                if (binding.refreshUsername.isRefreshing) {
+                    viewModel.fetchUserFollowing(it)
+                }
+            }
         })
+        binding.refreshUsername.setOnRefreshListener {
+            viewModel.usernameResponse.observe(viewLifecycleOwner, Observer {
+                it?.let {
+                    if (binding.refreshUsername.isRefreshing) {
+                        viewModel.fetchUserFollowing(it)
+                    }
+                }
+            })
+        }
     }
 
     private fun setupRecyclerView() {
@@ -70,13 +84,16 @@ class FollowingUserFragment : Fragment() {
         viewModel.userFollowingResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is Resource.Loading -> {
+                    binding.refreshUsername.isRefreshing = true
                     Timber.d("Following : loading")
                 }
                 is Resource.Success -> {
+                    binding.refreshUsername.isRefreshing = false
                     Timber.d("Following success : ${it.data!!}")
                     adapter.setData(it.data)
                 }
                 is Resource.Error -> {
+                    binding.refreshUsername.isRefreshing = true
                     Timber.d("Following error : ${it.message}")
                 }
             }
