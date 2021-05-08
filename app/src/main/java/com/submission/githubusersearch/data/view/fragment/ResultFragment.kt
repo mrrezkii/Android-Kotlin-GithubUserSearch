@@ -6,8 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.Toast
 import androidx.core.os.bundleOf
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -66,12 +66,12 @@ class ResultFragment : Fragment() {
     }
 
     private fun setupListener() {
-        binding.refreshUsername.isRefreshing = true
-        if (binding.refreshUsername.isRefreshing) {
-            viewModel.fetchUsername("newbie")
-        }
-        binding.refreshUsername.setOnRefreshListener {
-            viewModel.fetchUsername("newbie")
+        binding.editSearch.doAfterTextChanged {
+            adapter.filter.filter(it.toString())
+            viewModel.fetchUsername(it.toString())
+            binding.refreshUsername.setOnRefreshListener {
+                viewModel.fetchUsername(it.toString())
+            }
         }
     }
 
@@ -101,7 +101,6 @@ class ResultFragment : Fragment() {
                 }
                 is Resource.Error -> {
                     binding.refreshUsername.isRefreshing = false
-                    Toast.makeText(context, it.message, Toast.LENGTH_LONG).show()
                 }
             }
         })
