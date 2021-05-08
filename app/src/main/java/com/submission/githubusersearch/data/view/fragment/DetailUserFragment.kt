@@ -74,30 +74,6 @@ class DetailUserFragment : Fragment() {
 
                 bottomSheetDialog.setContentView(bottomSheetView)
                 bottomSheetDialog.show()
-
-//                data.name?.let { it1 ->
-//                    AwesomeDialog.build(requireActivity())
-//                        .title(it1)
-//                        .body(
-//                            """
-//                            username    : ${data.login}
-//                            location    : ${data.location}
-//                            company     : ${data.company}
-//                        """.trimIndent()
-//                        )
-//                        .onPositive("Close")
-//                } ?: run {
-//                    AwesomeDialog.build(requireActivity())
-//                        .title(username)
-//                        .body(
-//                            """
-//                            username    : ${data.login}
-//                            location    : ${data.location}
-//                            company     : ${data.company}
-//                        """.trimIndent()
-//                        )
-//                        .onPositive("Close")
-//                }
             }
         })
 
