@@ -11,20 +11,19 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import com.dicoding.githubapi.network.response.UserResponse
 import com.submission.githubusersearch.R
-import com.submission.githubusersearch.data.view.adapter.UserAdapter
+import com.submission.githubusersearch.data.view.adapter.ResultAdapter
 import com.submission.githubusersearch.data.viewmodel.SearchUserViewModel
 import com.submission.githubusersearch.databinding.FragmentResultBinding
 import com.submission.githubusersearch.network.Resource
-import timber.log.Timber
+import com.submission.githubusersearch.storage.persistence.ListUserEntity
 
 
 class ResultFragment : Fragment() {
 
     private val viewModel by lazy { ViewModelProvider(requireActivity()).get(SearchUserViewModel::class.java) }
     private lateinit var binding: FragmentResultBinding
-    private lateinit var adapter: UserAdapter
+    private lateinit var adapter: ResultAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,14 +36,21 @@ class ResultFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
-        setupListener()
         setupRecyclerView()
+        setupListener()
         setupObserver()
     }
 
     override fun onStart() {
         super.onStart()
         viewModel.getPreferences()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.listDataUser.observe(viewLifecycleOwner, Observer {
+            adapter.setData(it)
+        })
     }
 
     @SuppressLint("NewApi")
@@ -56,38 +62,37 @@ class ResultFragment : Fragment() {
 
     private fun setupListener() {
         viewModel.preferences.observe(viewLifecycleOwner, Observer {
-            binding.searchUsername.setQuery(it.login, false)
+            binding.searchUsername.setQuery(it.login, true)
         })
         binding.searchUsername.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 binding.searchUsername.clearFocus()
-                filterAdapter(query)
-                return false
+                viewModel.fetchUsername(query!!)
+                viewModel.savePreferences(query)
+                binding.refreshUsername.setOnRefreshListener {
+                    viewModel.fetchUsername(query)
+                }
+                return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                filterAdapter(newText)
-                return false
+                viewModel.fetchUsername(newText!!)
+                viewModel.savePreferences(newText)
+                binding.refreshUsername.setOnRefreshListener {
+                    viewModel.fetchUsername(newText)
+                }
+                return true
             }
         })
     }
 
-    private fun filterAdapter(query: String?) {
-        adapter.filter.filter(query)
-        viewModel.fetchUsername(query!!)
-        binding.refreshUsername.setOnRefreshListener {
-            viewModel.fetchUsername(query)
-        }
-        viewModel.savePreferences(query)
-    }
-
     private fun setupRecyclerView() {
-        adapter = UserAdapter(arrayListOf(), object : UserAdapter.OnAdapterListener {
-            override fun onClick(result: UserResponse) {
+        adapter = ResultAdapter(arrayListOf(), object : ResultAdapter.OnAdapterListener {
+            override fun onClick(result: ListUserEntity) {
                 findNavController().navigate(
                     R.id.action_resultFragment_to_detailUserFragment,
-                    bundleOf("username" to result.login)
+                    bundleOf("username" to result.username)
                 )
             }
         })
@@ -100,27 +105,20 @@ class ResultFragment : Fragment() {
                 is Resource.Loading -> {
                     binding.refreshUsername.isRefreshing = true
                     print("github : isLoading")
-                    viewModel.deleteDataUsername()
                 }
                 is Resource.Success -> {
+                    viewModel.deleteDataUsername()
                     val data = it.data!!.items
                     binding.refreshUsername.isRefreshing = false
                     print("github : $data")
-                    adapter.setData(it.data.items as List<UserResponse>)
                     data?.forEach { it ->
                         viewModel.saveDataUsername(it!!)
                     }
-
                 }
                 is Resource.Error -> {
                     binding.refreshUsername.isRefreshing = false
                 }
             }
         })
-        viewModel.listDataUser.observe(viewLifecycleOwner, Observer {
-            Timber.e("Cek db : $it")
-        })
-
     }
-
 }
