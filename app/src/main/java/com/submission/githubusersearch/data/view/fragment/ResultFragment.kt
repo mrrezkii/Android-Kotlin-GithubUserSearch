@@ -1,5 +1,6 @@
 package com.submission.githubusersearch.data.view.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -40,11 +41,22 @@ class ResultFragment : Fragment() {
         setupObserver()
     }
 
+    override fun onStart() {
+        super.onStart()
+        viewModel.getPreferences()
+    }
+
+    @SuppressLint("NewApi")
     private fun setupView() {
         binding.toolbarLayout.title = getString(R.string.result_username)
+        binding.searchUsername.focusable
+        binding.searchUsername.isIconified = false
     }
 
     private fun setupListener() {
+        viewModel.preferences.observe(viewLifecycleOwner, Observer {
+            binding.searchUsername.setQuery(it.login, false)
+        })
         binding.searchUsername.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
             androidx.appcompat.widget.SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -66,6 +78,7 @@ class ResultFragment : Fragment() {
         binding.refreshUsername.setOnRefreshListener {
             viewModel.fetchUsername(query)
         }
+        viewModel.savePreferences(query)
     }
 
     private fun setupRecyclerView() {

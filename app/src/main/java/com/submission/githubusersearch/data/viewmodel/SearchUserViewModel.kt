@@ -4,6 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dicoding.githubapi.network.response.SearchUserResponse
+import com.kotlinmvvm.cekongkir.database.preferences.PreferencesModel
 import com.submission.githubusersearch.network.GithubRepository
 import com.submission.githubusersearch.network.Resource
 import kotlinx.coroutines.launch
@@ -13,6 +14,7 @@ class SearchUserViewModel(
 ) : ViewModel() {
 
     val searchUserResponse: MutableLiveData<Resource<SearchUserResponse>> = MutableLiveData()
+    val preferences: MutableLiveData<PreferencesModel> = MutableLiveData()
 
     fun fetchUsername(username: String) = viewModelScope.launch {
         searchUserResponse.value = Resource.Loading()
@@ -24,4 +26,11 @@ class SearchUserViewModel(
         }
     }
 
+    fun savePreferences(username: String?) {
+        repository.savePreferences(username)
+    }
+
+    fun getPreferences() {
+        preferences.value = repository.getPreferences()
+    }
 }
