@@ -12,6 +12,7 @@ import com.submission.githubusersearch.data.view.adapter.UserAdapter
 import com.submission.githubusersearch.data.viewmodel.UserDetailViewModel
 import com.submission.githubusersearch.data.viewmodel.factory.UserDetailViewModelFactory
 import com.submission.githubusersearch.databinding.FragmentFollowerUserBinding
+import com.submission.githubusersearch.network.GithubRepository
 import com.submission.githubusersearch.network.Resource
 import com.submission.githubusersearch.network.RetrofitClient
 import timber.log.Timber
@@ -23,6 +24,7 @@ class FollowerUserFragment : Fragment() {
     private lateinit var viewModelFactory: UserDetailViewModelFactory
     private lateinit var viewModel: UserDetailViewModel
     private lateinit var adapter: UserAdapter
+    private lateinit var repository: GithubRepository
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,7 +43,8 @@ class FollowerUserFragment : Fragment() {
     }
 
     private fun setupViewModel() {
-        viewModelFactory = UserDetailViewModelFactory(api)
+        repository = GithubRepository(api)
+        viewModelFactory = UserDetailViewModelFactory(repository)
         viewModel = ViewModelProvider(
             requireActivity(),
             viewModelFactory

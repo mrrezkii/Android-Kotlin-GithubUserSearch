@@ -3,6 +3,7 @@ package com.submission.githubusersearch.storage.persistence
 import androidx.lifecycle.LiveData
 import androidx.room.*
 
+@Dao
 interface ListUserDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

@@ -16,6 +16,7 @@ import com.submission.githubusersearch.data.view.adapter.UserAdapter
 import com.submission.githubusersearch.data.viewmodel.SearchUserViewModel
 import com.submission.githubusersearch.data.viewmodel.factory.SearchUserViewModelFactory
 import com.submission.githubusersearch.databinding.FragmentResultBinding
+import com.submission.githubusersearch.network.GithubRepository
 import com.submission.githubusersearch.network.Resource
 import com.submission.githubusersearch.network.RetrofitClient
 
@@ -27,6 +28,7 @@ class ResultFragment : Fragment() {
     private lateinit var viewModelFactory: SearchUserViewModelFactory
     private lateinit var viewModel: SearchUserViewModel
     private lateinit var adapter: UserAdapter
+    private lateinit var repository: GithubRepository
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,7 +52,8 @@ class ResultFragment : Fragment() {
     }
 
     private fun setupViewModel() {
-        viewModelFactory = SearchUserViewModelFactory(api)
+        repository = GithubRepository(api)
+        viewModelFactory = SearchUserViewModelFactory(repository)
         viewModel = ViewModelProvider(this, viewModelFactory).get(SearchUserViewModel::class.java)
     }
 
