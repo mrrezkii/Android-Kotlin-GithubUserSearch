@@ -7,16 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-import com.example.awesomedialog.AwesomeDialog
-import com.example.awesomedialog.body
-import com.example.awesomedialog.onPositive
-import com.example.awesomedialog.title
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.tabs.TabLayoutMediator
 import com.submission.githubusersearch.R
 import com.submission.githubusersearch.data.view.adapter.DetailUserAdapter
@@ -51,29 +49,55 @@ class DetailUserFragment : Fragment() {
     private fun setupFab() {
         viewModel.dataUser.observe(viewLifecycleOwner, Observer { data ->
             binding.fab.setOnClickListener {
-                data.name?.let { it1 ->
-                    AwesomeDialog.build(requireActivity())
-                        .title(it1)
-                        .body(
-                            """
-                            username    : ${data.login}
-                            location    : ${data.location}
-                            company     : ${data.company}
-                        """.trimIndent()
-                        )
-                        .onPositive("Close")
-                } ?: run {
-                    AwesomeDialog.build(requireActivity())
-                        .title(username)
-                        .body(
-                            """
-                            username    : ${data.login}
-                            location    : ${data.location}
-                            company     : ${data.company}
-                        """.trimIndent()
-                        )
-                        .onPositive("Close")
+                val bottomSheetDialog =
+                    BottomSheetDialog(requireActivity(), R.style.BottomSheetDialogTheme)
+                val bottomSheetView = LayoutInflater.from(activity).inflate(
+                    R.layout.bottomsheet_container,
+                    requireActivity().findViewById(R.id.bottom_sheet_container)
+                )
+
+                val tvUsername = bottomSheetView.findViewById<TextView>(R.id.tv_username)
+                val tvName = bottomSheetView.findViewById<TextView>(R.id.tv_name)
+                val tvLocation = bottomSheetView.findViewById<TextView>(R.id.tv_location)
+                val tvCompany = bottomSheetView.findViewById<TextView>(R.id.tv_company)
+
+                tvUsername.text = username
+                if (data.name != null) {
+                    tvName.text = data.name
                 }
+                if (data.location != null) {
+                    tvLocation.text = data.location
+                }
+                if (data.company != null) {
+                    tvCompany.text = data.company
+                }
+
+                bottomSheetDialog.setContentView(bottomSheetView)
+                bottomSheetDialog.show()
+
+//                data.name?.let { it1 ->
+//                    AwesomeDialog.build(requireActivity())
+//                        .title(it1)
+//                        .body(
+//                            """
+//                            username    : ${data.login}
+//                            location    : ${data.location}
+//                            company     : ${data.company}
+//                        """.trimIndent()
+//                        )
+//                        .onPositive("Close")
+//                } ?: run {
+//                    AwesomeDialog.build(requireActivity())
+//                        .title(username)
+//                        .body(
+//                            """
+//                            username    : ${data.login}
+//                            location    : ${data.location}
+//                            company     : ${data.company}
+//                        """.trimIndent()
+//                        )
+//                        .onPositive("Close")
+//                }
             }
         })
 

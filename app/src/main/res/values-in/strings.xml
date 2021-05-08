@@ -6,4 +6,8 @@
     <string name="result_username">Hasil Username</string>
     <string name="follower">Diikuti</string>
     <string name="following">Mengikuti</string>
+    <string name="username">Nama Pengguna</string>
+    <string name="name">Nama</string>
+    <string name="location">Lokasi</string>
+    <string name="company">Perusahaan</string>
 </resources>

@@ -5,4 +5,8 @@
     <string name="result_username">Result Username</string>
     <string name="follower">Follower</string>
     <string name="following">Following</string>
+    <string name="username">Username</string>
+    <string name="name">Name</string>
+    <string name="location">Location</string>
+    <string name="company">Company</string>
 </resources>
