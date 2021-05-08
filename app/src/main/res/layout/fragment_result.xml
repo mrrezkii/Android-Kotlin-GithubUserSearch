@@ -9,18 +9,14 @@
         android:id="@+id/toolbar"
         layout="@layout/toolbar" />
 
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/edit_search"
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/search_username"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_normal"
         android:layout_marginTop="@dimen/margin_very_big"
         android:layout_marginRight="@dimen/margin_normal"
-        android:background="@android:color/transparent"
-        android:drawableEnd="@drawable/ic_baseline_search_24"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:hint="@string/search_username"
+        android:background="#f5f5f5"
         android:maxLines="1"
         android:padding="@dimen/text_small"
         android:lines="1"
@@ -39,7 +35,7 @@
         android:layout_marginBottom="@dimen/text_small"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_search">
+        app:layout_constraintTop_toBottomOf="@+id/search_username">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_result"

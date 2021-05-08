@@ -1,13 +1,11 @@
 package com.dicoding.githubapi.data.view.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
+import android.widget.SearchView
 import androidx.core.os.bundleOf
-import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -48,16 +46,7 @@ class ResultFragment : Fragment() {
     }
 
     private fun setupView() {
-        binding.editSearch.requestFocus()
         binding.toolbar.toolbarLayout.title = getString(R.string.result_username)
-    }
-
-    private fun setupSoftKeyboard() {
-        val imgr =
-            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imgr.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
-
-        imgr.showSoftInput(binding.editSearch, 0)
     }
 
     private fun setupViewModel() {
@@ -66,12 +55,26 @@ class ResultFragment : Fragment() {
     }
 
     private fun setupListener() {
-        binding.editSearch.doAfterTextChanged {
-            adapter.filter.filter(it.toString())
-            viewModel.fetchUsername(it.toString())
-            binding.refreshUsername.setOnRefreshListener {
-                viewModel.fetchUsername(it.toString())
+        binding.searchUsername.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+            androidx.appcompat.widget.SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                binding.searchUsername.clearFocus()
+                filterAdapter(query)
+                return false
             }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                filterAdapter(newText)
+                return false
+            }
+        })
+    }
+
+    private fun filterAdapter(query: String?) {
+        adapter.filter.filter(query)
+        viewModel.fetchUsername(query!!)
+        binding.refreshUsername.setOnRefreshListener {
+            viewModel.fetchUsername(query)
         }
     }
 
@@ -106,8 +109,4 @@ class ResultFragment : Fragment() {
         })
     }
 
-    override fun onResume() {
-        super.onResume()
-        setupSoftKeyboard()
-    }
 }
