@@ -46,7 +46,7 @@ class ResultFragment : Fragment() {
     }
 
     private fun setupView() {
-        binding.toolbar.toolbarLayout.title = getString(R.string.result_username)
+        binding.toolbarLayout.title = getString(R.string.result_username)
     }
 
     private fun setupViewModel() {
