@@ -21,23 +21,15 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.submission.githubusersearch.R
 import com.submission.githubusersearch.data.view.adapter.DetailUserAdapter
 import com.submission.githubusersearch.data.viewmodel.UserDetailViewModel
-import com.submission.githubusersearch.data.viewmodel.factory.UserDetailViewModelFactory
 import com.submission.githubusersearch.databinding.FragmentDetailUserBinding
-import com.submission.githubusersearch.network.GithubRepository
 import com.submission.githubusersearch.network.Resource
-import com.submission.githubusersearch.network.RetrofitClient
 
 
 class DetailUserFragment : Fragment() {
 
-    private val api by lazy { RetrofitClient.getClient() }
     private lateinit var binding: FragmentDetailUserBinding
-    private lateinit var viewModelFactory: UserDetailViewModelFactory
-    private lateinit var viewModel: UserDetailViewModel
+    private val viewModel by lazy { ViewModelProvider(requireActivity()).get(UserDetailViewModel::class.java) }
     private val username by lazy { requireArguments().getString("username")!! }
-    private lateinit var repository: GithubRepository
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,7 +43,6 @@ class DetailUserFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         setupView()
         setupTab()
-        setupViewModel()
         setupListener()
         setupObserver()
         setupFab()
@@ -109,15 +100,6 @@ class DetailUserFragment : Fragment() {
         }.attach()
     }
 
-    private fun setupViewModel() {
-        repository = GithubRepository(api)
-        viewModelFactory = UserDetailViewModelFactory(repository)
-        viewModel = ViewModelProvider(
-            requireActivity(),
-            viewModelFactory
-        ).get(UserDetailViewModel::class.java)
-    }
-
     private fun setupListener() {
         viewModel.fetchUserDetail(username)
         viewModel.usernameResponse.postValue(username)
@@ -133,9 +115,6 @@ class DetailUserFragment : Fragment() {
                     print("detail : ${it.data!!.name}")
                     binding.usernameGithub.text = it.data.name
                     viewModel.dataUser.postValue(it.data)
-//                    viewModel.nameResponse.postValue(it.data.name)
-//                    viewModel.locationResponse.postValue(it.data.location)
-//                    viewModel.companyResponse.postValue(it.data.company)
 
                     Glide.with(view?.context!!)
                         .load(it.data.avatarUrl)

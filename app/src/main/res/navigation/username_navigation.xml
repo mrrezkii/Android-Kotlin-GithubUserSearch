@@ -5,7 +5,7 @@
     app:startDestination="@id/resultFragment">
     <fragment
         android:id="@+id/resultFragment"
-        android:name="com.dicoding.githubapi.data.view.fragment.ResultFragment"
+        android:name="com.submission.githubusersearch.data.view.fragment.ResultFragment"
         android:label="ResultFragment">
         <action
             android:id="@+id/action_resultFragment_to_detailUserFragment"

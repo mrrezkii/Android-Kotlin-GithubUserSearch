@@ -10,21 +10,15 @@ import androidx.lifecycle.ViewModelProvider
 import com.dicoding.githubapi.network.response.UserResponse
 import com.submission.githubusersearch.data.view.adapter.UserAdapter
 import com.submission.githubusersearch.data.viewmodel.UserDetailViewModel
-import com.submission.githubusersearch.data.viewmodel.factory.UserDetailViewModelFactory
 import com.submission.githubusersearch.databinding.FragmentFollowerUserBinding
-import com.submission.githubusersearch.network.GithubRepository
 import com.submission.githubusersearch.network.Resource
-import com.submission.githubusersearch.network.RetrofitClient
 import timber.log.Timber
 
 class FollowerUserFragment : Fragment() {
 
-    private val api by lazy { RetrofitClient.getClient() }
     private lateinit var binding: FragmentFollowerUserBinding
-    private lateinit var viewModelFactory: UserDetailViewModelFactory
-    private lateinit var viewModel: UserDetailViewModel
+    private val viewModel by lazy { ViewModelProvider(requireActivity()).get(UserDetailViewModel::class.java) }
     private lateinit var adapter: UserAdapter
-    private lateinit var repository: GithubRepository
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,20 +30,9 @@ class FollowerUserFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setupViewModel()
         setupListener()
         setupRecyclerView()
         setupObserver()
-    }
-
-    private fun setupViewModel() {
-        repository = GithubRepository(api)
-        viewModelFactory = UserDetailViewModelFactory(repository)
-        viewModel = ViewModelProvider(
-            requireActivity(),
-            viewModelFactory
-        ).get(UserDetailViewModel::class.java)
-
     }
 
     private fun setupListener() {

@@ -1,4 +1,4 @@
-package com.dicoding.githubapi.data.view.fragment
+package com.submission.githubusersearch.data.view.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -14,21 +14,15 @@ import com.dicoding.githubapi.network.response.UserResponse
 import com.submission.githubusersearch.R
 import com.submission.githubusersearch.data.view.adapter.UserAdapter
 import com.submission.githubusersearch.data.viewmodel.SearchUserViewModel
-import com.submission.githubusersearch.data.viewmodel.factory.SearchUserViewModelFactory
 import com.submission.githubusersearch.databinding.FragmentResultBinding
-import com.submission.githubusersearch.network.GithubRepository
 import com.submission.githubusersearch.network.Resource
-import com.submission.githubusersearch.network.RetrofitClient
 
 
 class ResultFragment : Fragment() {
 
-    private val api by lazy { RetrofitClient.getClient() }
+    private val viewModel by lazy { ViewModelProvider(requireActivity()).get(SearchUserViewModel::class.java) }
     private lateinit var binding: FragmentResultBinding
-    private lateinit var viewModelFactory: SearchUserViewModelFactory
-    private lateinit var viewModel: SearchUserViewModel
     private lateinit var adapter: UserAdapter
-    private lateinit var repository: GithubRepository
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,7 +35,6 @@ class ResultFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupView()
-        setupViewModel()
         setupListener()
         setupRecyclerView()
         setupObserver()
@@ -49,12 +42,6 @@ class ResultFragment : Fragment() {
 
     private fun setupView() {
         binding.toolbarLayout.title = getString(R.string.result_username)
-    }
-
-    private fun setupViewModel() {
-        repository = GithubRepository(api)
-        viewModelFactory = SearchUserViewModelFactory(repository)
-        viewModel = ViewModelProvider(this, viewModelFactory).get(SearchUserViewModel::class.java)
     }
 
     private fun setupListener() {
