@@ -50,12 +50,6 @@ class ResultFragment : Fragment() {
     private fun setupView() {
         binding.editSearch.requestFocus()
         binding.toolbar.toolbarLayout.title = getString(R.string.result_username)
-        binding.toolbar.toolbarLayout.setNavigationIcon(androidx.appcompat.R.drawable.abc_ic_ab_back_material)
-        binding.toolbar.toolbarLayout.setNavigationOnClickListener {
-            findNavController().popBackStack()
-        }
-
-
     }
 
     private fun setupSoftKeyboard() {
