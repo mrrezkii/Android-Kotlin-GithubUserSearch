@@ -30,7 +30,7 @@ class SearchFragment : Fragment() {
     }
 
     private fun setupView() {
-        binding.toolbar.toolbarLayout.title = "Search User"
+        binding.toolbar.toolbarLayout.title = getString(R.string.search_username)
     }
 
     private fun setupNavigate() {
