@@ -15,6 +15,9 @@ interface ListUserDao {
     @Delete
     suspend fun delete(listUserEntity: ListUserEntity)
 
+    @Query("DELETE FROM tableUsername")
+    suspend fun deleteAll()
+
     @Query("SELECT * FROM tableUsername")
     fun select(): LiveData<List<ListUserEntity>>
 }

@@ -7,5 +7,5 @@ import androidx.room.PrimaryKey
 data class ListUserEntity(
     @PrimaryKey(autoGenerate = false)
     val username: String,
-    val profilePict: String?
+    val profilePict: String
 )

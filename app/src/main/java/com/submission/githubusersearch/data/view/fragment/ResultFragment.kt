@@ -17,6 +17,7 @@ import com.submission.githubusersearch.data.view.adapter.UserAdapter
 import com.submission.githubusersearch.data.viewmodel.SearchUserViewModel
 import com.submission.githubusersearch.databinding.FragmentResultBinding
 import com.submission.githubusersearch.network.Resource
+import timber.log.Timber
 
 
 class ResultFragment : Fragment() {
@@ -99,17 +100,27 @@ class ResultFragment : Fragment() {
                 is Resource.Loading -> {
                     binding.refreshUsername.isRefreshing = true
                     print("github : isLoading")
+                    viewModel.deleteDataUsername()
                 }
                 is Resource.Success -> {
+                    val data = it.data!!.items
                     binding.refreshUsername.isRefreshing = false
-                    print("github : ${it.data!!.items}")
+                    print("github : $data")
                     adapter.setData(it.data.items as List<UserResponse>)
+                    data?.forEach { it ->
+                        viewModel.saveDataUsername(it!!)
+                    }
+
                 }
                 is Resource.Error -> {
                     binding.refreshUsername.isRefreshing = false
                 }
             }
         })
+        viewModel.listDataUser.observe(viewLifecycleOwner, Observer {
+            Timber.e("Cek db : $it")
+        })
+
     }
 
 }

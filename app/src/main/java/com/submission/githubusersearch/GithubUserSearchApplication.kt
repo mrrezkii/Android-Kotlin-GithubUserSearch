@@ -7,6 +7,7 @@ import com.submission.githubusersearch.network.GithubEndpoint
 import com.submission.githubusersearch.network.GithubRepository
 import com.submission.githubusersearch.network.RetrofitClient
 import com.submission.githubusersearch.storage.perferences.GithubPreferences
+import com.submission.githubusersearch.storage.persistence.GithubDatabase
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.x.androidXModule
@@ -22,7 +23,8 @@ class GithubUserSearchApplication : Application(), KodeinAware {
 
         bind<GithubEndpoint>() with singleton { RetrofitClient.getClient() }
         bind() from singleton { GithubPreferences(instance()) }
-        bind() from singleton { GithubRepository(instance(), instance()) }
+        bind() from singleton { GithubDatabase(instance()) }
+        bind() from singleton { GithubRepository(instance(), instance(), instance()) }
         bind() from singleton { SearchUserViewModelFactory(instance()) }
         bind() from singleton { UserDetailViewModelFactory(instance()) }
     }

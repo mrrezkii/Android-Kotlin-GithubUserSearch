@@ -1,12 +1,15 @@
 package com.submission.githubusersearch.data.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dicoding.githubapi.network.response.SearchUserResponse
+import com.dicoding.githubapi.network.response.UserResponse
 import com.kotlinmvvm.cekongkir.database.preferences.PreferencesModel
 import com.submission.githubusersearch.network.GithubRepository
 import com.submission.githubusersearch.network.Resource
+import com.submission.githubusersearch.storage.persistence.ListUserEntity
 import kotlinx.coroutines.launch
 
 class SearchUserViewModel(
@@ -15,6 +18,7 @@ class SearchUserViewModel(
 
     val searchUserResponse: MutableLiveData<Resource<SearchUserResponse>> = MutableLiveData()
     val preferences: MutableLiveData<PreferencesModel> = MutableLiveData()
+    val listDataUser: LiveData<List<ListUserEntity>> = repository.getDataUsername()
 
     fun fetchUsername(username: String) = viewModelScope.launch {
         searchUserResponse.value = Resource.Loading()
@@ -32,5 +36,18 @@ class SearchUserViewModel(
 
     fun getPreferences() {
         preferences.value = repository.getPreferences()
+    }
+
+    fun saveDataUsername(listDataUser: UserResponse) = viewModelScope.launch {
+        repository.saveDataUsername(
+            ListUserEntity(
+                username = listDataUser.login!!,
+                profilePict = listDataUser.avatarUrl!!
+            )
+        )
+    }
+
+    fun deleteDataUsername() = viewModelScope.launch {
+        repository.deleteDataUsername()
     }
 }
