@@ -18,6 +18,7 @@ import com.example.awesomedialog.body
 import com.example.awesomedialog.onPositive
 import com.example.awesomedialog.title
 import com.google.android.material.tabs.TabLayoutMediator
+import com.submission.githubusersearch.R
 import com.submission.githubusersearch.data.view.adapter.DetailUserAdapter
 import com.submission.githubusersearch.data.viewmodel.UserDetailViewModel
 import com.submission.githubusersearch.data.viewmodel.factory.UserDetailViewModelFactory
@@ -95,7 +96,7 @@ class DetailUserFragment : Fragment() {
     }
 
     private fun setupTab() {
-        val tabTitles = arrayListOf("Follower", "Following")
+        val tabTitles = arrayListOf(getString(R.string.follower), getString(R.string.following))
         val tabAdapter = DetailUserAdapter(
             requireActivity().supportFragmentManager,
             requireActivity().lifecycle

@@ -4,4 +4,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search_username">Cari Username</string>
     <string name="result_username">Hasil Username</string>
+    <string name="follower">Diikuti</string>
+    <string name="following">Mengikuti</string>
 </resources>
